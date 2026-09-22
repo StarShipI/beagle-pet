@@ -4,6 +4,7 @@ package.name = beaglepet
 package.domain = org.beagle
 source.dir = .
 source.include_exts = py,png
+source.main = beagle_mobile.py
 version = 1.0
 requirements = kivy
 orientation = portrait
