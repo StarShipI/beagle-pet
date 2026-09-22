@@ -41,24 +41,25 @@ class BeaglePet(FloatLayout):
         self.on_end = None
 
         # 宠物图像
-        self.pet = Image(allow_stretch=True, keep_ratio=True, size_hint=(None, None))
+        self.pet = Image(fit_mode="scale-down", size_hint=(None, None), size=(300, 360))
         self.pet.pos_hint = {"center_x": 0.5, "center_y": 0.55}
         self.add_widget(self.pet)
 
         # 底部按钮栏
         bar = BoxLayout(orientation="horizontal", size_hint=(1, None), height=60,
-                        pos_hint={"bottom": 1})
+                        pos_hint={"y": 0})
         buttons = [
-            ("🦴", "feed",  "#D97706"),
-            ("🤚", "pet",   "#E11D48"),
-            ("🎾", "tease", "#7C3AED"),
-            ("💩", "poop",  "#92400E"),
+            ("喂食", "feed",  "#D97706"),
+            ("摸摸", "pet",   "#E11D48"),
+            ("挑逗", "tease", "#7C3AED"),
+            ("拉屎", "poop",  "#92400E"),
         ]
         for label, action, color in buttons:
-            btn = Button(text=label, font_size=24, background_color=[0, 0, 0, 0],
-                         color=[1, 1, 1, 1], size_hint_x=1)
-            btn.background_normal = ""
-            btn.background_color = [0.3, 0.3, 0.3, 0.8]
+            rgb = color.lstrip("#")
+            r, g, b = (int(rgb[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
+            btn = Button(text=label, font_size=20, background_normal="",
+                         background_color=[0.3, 0.3, 0.3, 0.8],
+                         color=[r, g, b, 1], size_hint_x=1)
             btn.bind(on_press=lambda b, a=action: self._on_button(a))
             bar.add_widget(btn)
         self.add_widget(bar)
@@ -136,6 +137,7 @@ class BeaglePet(FloatLayout):
 
     def on_touch_down(self, touch):
         if self.pet.collide_point(*touch.pos):
+            self.pet.pos_hint = {}
             self._touch_offset = (touch.x - self.pet.x, touch.y - self.pet.y)
             self._drag_start = touch.pos
         return super().on_touch_down(touch)
