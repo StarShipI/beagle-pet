@@ -27,15 +27,17 @@ jobs:
 
       - name: Build APK
         run: |
-          set -o pipefail
-          buildozer -v android debug 2>&1 | tee build.log
-          echo "=== BUILD EXIT CODE: $? ==="
+          set +e
+          buildozer -v android debug > build.log 2>&1
+          code=$?
+          echo "=== BUILD EXIT CODE: $code ==="
+          echo "=== last 100 lines of build.log ==="
+          tail -100 build.log
           echo "=== bin dir ==="
-          ls -la bin/ || echo "no bin dir"
+          ls -la bin/ 2>/dev/null || echo "no bin dir"
           echo "=== find apk ==="
           find . -name "*.apk" 2>/dev/null || echo "no apk found"
-          echo "=== last 50 lines of build.log ==="
-          tail -50 build.log
+          exit $code
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
