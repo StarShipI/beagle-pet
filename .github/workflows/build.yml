@@ -31,8 +31,10 @@ jobs:
           buildozer -v android debug > build.log 2>&1
           code=$?
           echo "=== BUILD EXIT CODE: $code ==="
-          echo "=== last 100 lines of build.log ==="
-          tail -100 build.log
+          echo "=== last 400 lines of build.log ==="
+          tail -400 build.log
+          echo "=== grep error/traceback lines ==="
+          grep -n -iE "error|traceback|exception|failed|cannot|undefined reference|no such file" build.log | tail -80 || echo "no matching lines"
           echo "=== bin dir ==="
           ls -la bin/ 2>/dev/null || echo "no bin dir"
           echo "=== find apk ==="
